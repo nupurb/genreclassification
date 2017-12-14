@@ -67,31 +67,23 @@ print(goodWordsList)
 
 
 with open("trainingsongdata.csv", "w", encoding = "utf8") as training:
-    with open("testsongdata.csv", "w", encoding = "utf8") as test:
-        fieldnames = ['artist', 'song', 'lyrics'] + goodWordsList
-        trainingwriter = csv.DictWriter(training, lineterminator='\n', fieldnames=fieldnames, restval=0)
-        testwriter = csv.DictWriter(test, lineterminator='\n', fieldnames=fieldnames, restval=0)
-        trainingwriter.writeheader()
-        testwriter.writeheader()
-        with open('songdatalower.csv', encoding='utf8') as songdata:
-            reader = csv.DictReader(songdata)
-            trainingCounter = 0
-            for row in reader:
-                canUse = False
+    fieldnames = ['artist', 'song', 'lyrics'] + goodWordsList
+    trainingwriter = csv.DictWriter(training, lineterminator='\n', fieldnames=fieldnames, restval=0)
+    trainingwriter.writeheader()
+    with open('songdatalower.csv', encoding='utf8') as songdata:
+        reader = csv.DictReader(songdata)
+        for row in reader:
+            canUse = False
+            for genre in artistGenreDict[row['artist']]:
+                if genre in goodWords:
+                    canUse = True
+                    break
+            if canUse:
+                songDict = {'artist': row['artist'], 'song': row['song'], 'lyrics': row['text']}
                 for genre in artistGenreDict[row['artist']]:
                     if genre in goodWords:
-                        canUse = True
-                        break
-                if canUse:
-                    trainingCounter += 1
-                    songDict = {'artist': row['artist'], 'song': row['song'], 'lyrics': row['text']}
-                    for genre in artistGenreDict[row['artist']]:
-                        if genre in goodWords:
-                            songDict[genre] = 1
-                    if trainingCounter % 20 == 0:
-                        testwriter.writerow(songDict)
-                    else:
-                        trainingwriter.writerow(songDict)
+                        songDict[genre] = 1
+                trainingwriter.writerow(songDict)
 
 
 
