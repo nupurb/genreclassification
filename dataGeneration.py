@@ -30,7 +30,7 @@ with open('trainingsongdata.csv') as training:
             SINGLE_DIR = os.path.join(GENRE_DIR, mixedGenre[:-1])
             if not os.path.exists(SINGLE_DIR):
                 os.makedirs(SINGLE_DIR)
-            newSong = open(os.path.join(SINGLE_DIR, str(singleGenreDict[mixedGenre]) + ".txt"), "w+")
+            newSong = open(os.path.join(SINGLE_DIR, str(singleGenreDict[mixedGenre])), "w+")
             newSong.write(row['lyrics'])
 
 
